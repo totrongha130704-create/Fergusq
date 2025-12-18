@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Cây thông Noel</title>
+<style>
+    body {
+        background: linear-gradient(#00111a, #003);
+        color: white;
+        font-family: Arial;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+    }
+    .tree-container {
+        margin: 20px auto;
+        width: 300px;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #tree {
+        width: 250px;
+        transition: transform 0.2s;
+        cursor: grab;
+    }
+    .controls {
+        max-width: 400px;
+        margin: auto;
+        text-align: left;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+    }
+    input[type="range"] {
+        width: 100%;
+    }
+</style>
+</head>
+<body>
+
+<h2>🎄 Cây thông Noel</h2>
+<p>Kéo thanh để chỉnh – hoặc kéo trực tiếp cây thông</p>
+
+<div class="tree-container">
+    <img id="tree" src="https://i.imgur.com/3ZQ3Z9E.png" alt="Christmas Tree">
+</div>
+
+<div class="controls">
+    <label>Xoay (°)
+        <input type="range" min="-180" max="180" value="0" id="rotate">
+    </label>
+    <label>Phóng to / Thu nhỏ
+        <input type="range" min="0.5" max="2" step="0.1" value="1" id="scale">
+    </label>
+    <label>Di chuyển ngang
+        <input type="range" min="-150" max="150" value="0" id="moveX">
+    </label>
+    <label>Di chuyển dọc
+        <input type="range" min="-150" max="150" value="0" id="moveY">
+    </label>
+</div>
+
+<script>
+    const tree = document.getElementById("tree");
+    const rotate = document.getElementById("rotate");
+    const scale = document.getElementById("scale");
+    const moveX = document.getElementById("moveX");
+    const moveY = document.getElementById("moveY");
+
+    function updateTree() {
+        tree.style.transform = `
+            translate(${moveX.value}px, ${moveY.value}px)
+            rotate(${rotate.value}deg)
+            scale(${scale.value})
+        `;
+    }
+
+    rotate.oninput = scale.oninput = moveX.oninput = moveY.oninput = updateTree;
+
+    let isDragging = false, startX, startY;
+    tree.addEventListener("mousedown", e => {
+        isDragging = true;
+        startX = e.clientX - moveX.value;
+        startY = e.clientY - moveY.value;
+        tree.style.cursor = "grabbing";
+    });
+    document.addEventListener("mousemove", e => {
+        if (!isDragging) return;
+        moveX.value = e.clientX - startX;
+        moveY.value = e.clientY - startY;
+        updateTree();
+    });
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+        tree.style.cursor = "grab";
+    });
+</script>
+
+</body>
+</html>
